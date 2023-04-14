@@ -204,13 +204,12 @@ app.post("/points", (req, res) => {
         fetchRequestedPoint(msisdn)
           .then((foundItem) => {
             if (foundItem.length === 0) {
-              res.send("No matching msisdn found ☹️.");
+              res.send("No customer record found ☹️.");
             } else {
               const fetchedPoints = foundItem.points;
               const fetchedNumber = foundItem.msisdn;
               const fetchedName = foundItem.name;
               const fechedDate = foundItem.dateCreated;
-              const modifiedShortCode = shortCode.toString();
 
               let text = "";
               if (message !== "points") {
@@ -219,7 +218,7 @@ app.post("/points", (req, res) => {
                 text = `Hello ${fetchedName} your points are ${fetchedPoints} and you created your card on ${fechedDate}. Have a lovely day ${fetchedName}`;
               }
               let data = JSON.stringify({
-                SenderId: `${modifiedShortCode}`,
+                SenderId: "Mobitext",
                 MessageParameters: [
                   {
                     Number: `${fetchedNumber}`,
