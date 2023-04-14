@@ -8,7 +8,7 @@ const port = 3000;
 app.use(express.json());
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://127.0.0.1:27017/pointsDB");
+mongoose.connect(process.env.DB_CONNECTION);
 
 const day = new Date();
 const options = {
@@ -120,7 +120,7 @@ async function deleteUsers() {
 app.get("/points", (req, res) => {
   getAllRecords()
     .then((foundItems) => {
-      if (foundItems.length === 0) {
+      if (foundItems != null && foundItems.length < 1) {
         res.send("Database empty please post a record .Thank you 😟");
       } else {
         res.send(foundItems);
