@@ -203,54 +203,54 @@ app.post("/points", (req, res) => {
 
         fetchRequestedPoint(msisdn)
           .then((foundItem) => {
-            if (foundItem.length === 0) {
-              res.send("No customer record found ☹️.");
+            let fetchedPoints = "";
+            let fetchedNumber = msisdn;
+            let fetchedName = "";
+            let fechedDate = "";
+            let text = "";
+            if (!foundItem) {
+              text =
+                "No customer record found please contact your supermarket. Thank you";
             } else {
-              const fetchedPoints = foundItem.points;
-              const fetchedNumber = foundItem.msisdn;
-              const fetchedName = foundItem.name;
-              const fechedDate = foundItem.dateCreated;
-
-              let text = "";
-              if (message !== "points") {
-                text = "Please enter a valid request";
-              } else {
-                text = `Hello ${fetchedName} your points are ${fetchedPoints} and you created your card on ${fechedDate}. Have a lovely day ${fetchedName}`;
-              }
-              let data = JSON.stringify({
-                SenderId: "Mobitext",
-                MessageParameters: [
-                  {
-                    Number: `${fetchedNumber}`,
-                    Text: `${text}`,
-                  },
-                ],
-                ApiKey: process.env.API_KEY,
-                ClientId: process.env.CLIENT_ID,
-              });
-
-              let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: "https://apis.onfonmedia.co.ke/v1/sms/SendBulkSMS",
-                headers: {
-                  "Content-Type": "application/json",
-                  AccessKey: process.env.ACCESS_KEY,
-                },
-                data: data,
-              };
-
-              axios
-                .request(config)
-                .then(() => {
-                  res.send(
-                    "Messsage sucessfully sent. Thank you for your patience 👍🏽"
-                  );
-                })
-                .catch((error) => {
-                  res.send(error);
-                });
+              fetchedPoints = foundItem.points;
+              fetchedName = foundItem.name;
+              fechedDate = foundItem.dateCreated;
+              text = `Hello ${fetchedName} your points are ${fetchedPoints} and you created your card on ${fechedDate}. Have a lovely day ${fetchedName}`;
             }
+
+            let data = JSON.stringify({
+              SenderId: "Mobitext",
+              MessageParameters: [
+                {
+                  Number: `${fetchedNumber}`,
+                  Text: `${text}`,
+                },
+              ],
+              ApiKey: process.env.API_KEY,
+              ClientId: process.env.CLIENT_ID,
+            });
+
+            let config = {
+              method: "post",
+              maxBodyLength: Infinity,
+              url: "https://apis.onfonmedia.co.ke/v1/sms/SendBulkSMS",
+              headers: {
+                "Content-Type": "application/json",
+                AccessKey: process.env.ACCESS_KEY,
+              },
+              data: data,
+            };
+
+            axios
+              .request(config)
+              .then(() => {
+                res.send(
+                  "Messsage sucessfully sent. Thank you for your patience 👍🏽"
+                );
+              })
+              .catch((error) => {
+                res.send(error);
+              });
           })
           .catch((err) => {
             console.log(err);
